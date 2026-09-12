@@ -139,8 +139,9 @@ to the header. The hook keeps announcing it, with the reason, so nobody rebuilds
 
 ```
 python -m unittest discover -s tests -v
-python tools/validate.py
-claude --plugin-dir plugins/team-procedures     # try the plugin without installing it
+python tools/validate.py                                  # our header rules
+claude plugin validate plugins/team-procedures --strict   # Claude Code's own manifest and skill checks
+claude --plugin-dir plugins/team-procedures               # try the plugin without installing it
 ```
 
 Python 3.9 or newer, standard library only. No `pip install`, no `jq`. On Windows use Git
