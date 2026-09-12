@@ -1,6 +1,6 @@
 ---
 type: regex
-pattern: 'good progress|great progress|on track'
+pattern: 'good progress|great progress|going well|steady progress'
 flags: i
 match: not_contains
 ---

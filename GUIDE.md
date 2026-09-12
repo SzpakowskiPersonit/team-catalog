@@ -176,7 +176,13 @@ Each of these happened. In the order you are likely to meet them.
     `criterion`; `minutes` does not match `summary`. If it did not fire, the word is not on
     the list — open the header and see. Everybody's first idea is embeddings; a list of
     eight words you can read is why this stays debuggable.
-13. **`claude plugin eval` is a real model call, every run.** Fifteen cases at one run each
+13. **A trigger word inside a filename does not count.** "get the decisions out of
+    meridian/2026-09-10-followup-transcript.md" was silent: the only "transcript" sits inside
+    `followup-transcript.md`, and a hyphen is part of the word on purpose (so `up` never
+    fires on `follow-up`). Type the words: "get the decisions out of the follow-up call
+    transcript meridian/…" fires with four hits. The stage prompts are pinned in
+    `tests/test_demo_prompts.py` for exactly this reason.
+14. **`claude plugin eval` is a real model call, every run.** Fifteen cases at one run each
     is fifteen sessions. The default is three runs per case and a second no-plugin arm —
     six sessions per case. `--ablation none` and `runs: 1` in each case are what keep the
     suite under a few dollars.

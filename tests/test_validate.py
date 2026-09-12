@@ -2,9 +2,11 @@
 pinned by a test that proves the rule catches the mistake it exists for."""
 import contextlib
 import io
+import os
 import sys
 import tempfile
 import unittest
+import unittest.mock
 from datetime import date
 from pathlib import Path
 
@@ -110,6 +112,28 @@ class ValidateTests(unittest.TestCase):
         errors, warnings = self.repo.run()
         self.assertEqual(errors, [])
         self.assertIn("254 days old (> 90)", self.only(warnings, "W010"))
+
+    def test_verified_in_the_future_is_an_error(self):
+        self.repo.add(header={"verified": "2027-01-01"})
+        self.assertIn("is in the future", self.only(self.repo.run()[0], "E041"))
+
+    def test_retired_fields_on_a_live_procedure(self):
+        self.repo.add(archived_meta={"retired": "2026-08-01", "retired_reason": '"why"'})
+        self.assertIn("Move it to archive/", self.only(self.repo.run()[0], "E062"))
+
+    def test_github_annotations_when_running_in_actions(self):
+        self.repo.add(header={"owner": "team", "verified": "2026-01-01"})
+        out = io.StringIO()
+        env = dict(os.environ, GITHUB_ACTIONS="true")
+        with unittest.mock.patch.dict(os.environ, env), contextlib.redirect_stdout(out):
+            validate.main(["--root", str(self.repo.root), "--today", "2026-09-12"])
+        text = out.getvalue()
+        self.assertIn("::error file=plugins/team-procedures/skills/pm-thing/SKILL.md::E020", text)
+        self.assertIn("::warning file=plugins/team-procedures/skills/pm-thing/SKILL.md::W010", text)
+
+    def test_bom_at_file_start_is_tolerated(self):
+        self.repo.add(text="﻿" + render())
+        self.assertEqual(self.repo.run(), ([], []))
 
     def test_name_must_match_directory(self):
         self.repo.add(dirname="other-name")

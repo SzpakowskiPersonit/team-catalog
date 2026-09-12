@@ -10,13 +10,18 @@ terminal and in a CI log.
 Rules (the header is parsed by plugins/team-procedures/scripts/catalog.py — one parser):
   E001 header does not parse            E010 name != directory name
   E020 owner missing / not on roster    E030 version missing
-  E040 verified missing / not a date    E050 fewer than 3 triggers
-  E070 description missing              E060/E061 archive: retired date / retired_reason
+  E040 verified missing / not a date    E041 verified is in the future
+  E050 fewer than 3 triggers            E070 description missing
+  E060/E061 archive: retired date / retired_reason   E062 retired fields on a live procedure
   W010 verified older than 90 days      W020 required section missing or empty
+
+Under GitHub Actions the same findings are also printed as ::error/::warning annotations,
+so the pull request shows them inline.
 """
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import sys
 from datetime import date
@@ -41,6 +46,12 @@ def load_roster(root: Path) -> list:
         if m and not line.lstrip().startswith("#"):
             names.append(m.group(1))
     return names
+
+
+def _path_of(finding: str) -> str:
+    """'E020 plugins/x/SKILL.md: text' -> 'plugins/x/SKILL.md' (for GitHub annotations)."""
+    rest = finding.split(" ", 1)[1] if " " in finding else finding
+    return rest.split(":", 1)[0]
 
 
 def _is_iso_date(value: str) -> bool:
@@ -77,7 +88,9 @@ def check_procedure(path: Path, roster: list, today: date, archived: bool, root:
         errors.append(f'E040 {rel}: verified "{proc.verified}" is not a date (YYYY-MM-DD)')
     else:
         age = catalog.days_since(proc.verified, today)
-        if age is not None and age > catalog.STALE_DAYS:
+        if age is not None and age < 0:
+            errors.append(f"E041 {rel}: verified {proc.verified} is in the future")
+        elif age is not None and age > catalog.STALE_DAYS:
             warnings.append(
                 f"W010 {rel}: verified {proc.verified} is {age} days old (> {catalog.STALE_DAYS}). Re-verify or retire."
             )
@@ -90,6 +103,8 @@ def check_procedure(path: Path, roster: list, today: date, archived: bool, root:
         if not proc.retired_reason.strip():
             errors.append(f"E061 {rel}: archived procedure has no retired_reason. Say why it was retired.")
     else:
+        if proc.retired.strip() or proc.retired_reason.strip():
+            errors.append(f'E062 {rel}: has "retired" fields but lives in skills/. Move it to archive/.')
         sections = catalog.body_sections(text)
         for name in catalog.REQUIRED_SECTIONS:
             if not sections.get(name, "").strip():
@@ -122,11 +137,17 @@ def main(argv=None) -> int:
     ap.add_argument("--root", type=Path, default=REPO_ROOT, help="repository root (default: this repo)")
     ap.add_argument("--today", type=date.fromisoformat, default=date.today(), help="reference date for staleness")
     args = ap.parse_args(argv)
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # Windows consoles vs "Mikołaj"
     errors, warnings, counts = run(args.root.resolve(), args.today)
     for line in warnings:
         print(line)
     for line in errors:
         print(line)
+    if os.environ.get("GITHUB_ACTIONS"):
+        for level, lines in (("warning", warnings), ("error", errors)):
+            for line in lines:
+                print(f"::{level} file={_path_of(line)}::{line}")
     status = "FAILED" if errors else "OK"
     print(
         f"{status}: {counts['skills']} procedures, {counts['archived']} archived, "

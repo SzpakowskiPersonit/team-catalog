@@ -1,4 +1,4 @@
 ---
 type: regex
-pattern: '- AC5:'
+pattern: 'AC5:'
 ---

@@ -39,7 +39,6 @@ You did not search. You did not remember. That is the point.
 | `TEMPLATE.md` | Copy this to start a procedure. |
 | `demo/meridian/` | Fictional project used by the workshop demo and by the evals. |
 | `GUIDE.md` | From zero to the first hint on a clean machine — including what bites. |
-| `RUNBOOK-waysconf.md` | How the live demo runs, and what to do when it does not. |
 
 ## The procedure file
 

@@ -3,7 +3,7 @@ name: ux-interview-synthesis
 description: Turn a set of user interview transcripts or notes into themes with evidence, each theme backed by counted participants and verbatim quotes. Use when asked to synthesize interviews, find insights, cluster research findings or summarize what users said.
 metadata:
   owner: Agnieszka
-  version: "1.0"
+  version: "1.1"
   verified: 2026-09-12
   triggers: [interview, synthesis, insights, research, participants, findings, themes, quotes]
 ---
@@ -23,7 +23,8 @@ needs to know what the users actually said, not what we hoped they would say.
    one participant only go to "Singles" at the end, not into a theme.
 4. For each theme, pick one verbatim quote per participant that supports it.
 5. Write the Output. Save as `YYYY-MM-DD-synthesis.md` in the research folder, dated with
-   the day of the synthesis.
+   the day of the synthesis, and show the full content in the reply as well — the reader
+   should not have to open the file to see what the users said.
 
 ## Decisions behind this
 

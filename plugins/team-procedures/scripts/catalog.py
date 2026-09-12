@@ -147,7 +147,8 @@ class Procedure:
 
 
 def load_procedure(path: Path, archived: bool = False) -> Procedure:
-    fm = parse_frontmatter(path.read_text(encoding="utf-8"))
+    # utf-8-sig: a Windows editor may prepend a BOM, which would otherwise hide the first '---'
+    fm = parse_frontmatter(path.read_text(encoding="utf-8-sig"))
     meta = fm.get("metadata")
     meta = meta if isinstance(meta, dict) else {}
     triggers = meta.get("triggers", [])
@@ -311,7 +312,7 @@ def main(argv) -> int:
             pass
         return 0
     if cmd == "parse" and len(argv) > 2:
-        fm = parse_frontmatter(Path(argv[2]).read_text(encoding="utf-8"))
+        fm = parse_frontmatter(Path(argv[2]).read_text(encoding="utf-8-sig"))
         print(json.dumps(fm, indent=2, ensure_ascii=False))
         return 0
     print(__doc__)

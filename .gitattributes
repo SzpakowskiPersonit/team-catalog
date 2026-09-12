@@ -1,0 +1,5 @@
+# Shell scripts and everything else stay LF on every checkout. A CRLF hint.sh on a Windows
+# clone fails with "\r: command not found" and the hook goes silent.
+* text=auto eol=lf
+*.sh text eol=lf
+*.py text eol=lf
