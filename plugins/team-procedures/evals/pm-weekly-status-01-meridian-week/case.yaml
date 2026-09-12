@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: pm-weekly-status-01-meridian-week
+tags: [pm-weekly-status]
+context:
+  scaffold_script: fixture.sh

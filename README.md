@@ -107,13 +107,16 @@ echo '{"prompt":"write the weekly status update for Meridian"}' \
 Each procedure ships three cases under `plugins/team-procedures/evals/`, run by Claude
 Code's built-in eval runner. They check the shape of the output — "exactly three decision
 lines", "the reversal is marked CHANGED" — not the wording, because two runs of the same
-model never produce identical text.
+model never produce identical text. Details and the case layout: `plugins/team-procedures/evals/README.md`.
 
 ```
-claude plugin eval plugins/team-procedures --no-publish --ablation none
-claude plugin eval plugins/team-procedures --no-publish --ablation none --model sonnet   # "the model changed"
-claude plugin eval plugins/team-procedures --no-publish --ablation none --case 'pm-meeting-decisions-02*'
+claude plugin eval plugins/team-procedures --ablation none --scaffold --allow-tools Write --no-publish
+claude plugin eval plugins/team-procedures --ablation none --scaffold --allow-tools Write --no-publish --model sonnet   # "the model changed"
+claude plugin eval plugins/team-procedures --ablation none --scaffold --allow-tools Write --no-publish --case 'pm-meeting-decisions-02*'
 ```
+
+`--scaffold` seeds the fixture files, `--allow-tools Write` lets procedures write their dated
+output file. Fifteen cases, one run each, is fifteen model sessions on your account.
 
 The runner tells you the output changed. It does not tell you it got worse. The owner reads
 the diff. That is why the owner is a person.
