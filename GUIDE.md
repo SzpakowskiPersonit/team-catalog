@@ -127,7 +127,10 @@ To see what "the model changed" looks like, run the same suite with `--model son
 
 ## 7. Update, retire, move on
 
-- Get the latest: `/plugin marketplace update team-catalog`.
+- Get the latest: `/plugin marketplace update team-catalog`, then `/plugin update team-procedures`,
+  then start a new session. The first command refreshes the catalog; the plugin itself does not
+  change until the second one runs. Checked on 2026-09-12: after only the first command the
+  installed copy still had four procedures.
 - Retire a procedure: move its folder from `skills/` to `archive/`, add `retired:` and
   `retired_reason:` under `metadata:`. The hook keeps announcing it, with the reason.
 - Try a change before installing it: `claude --plugin-dir plugins/team-procedures` loads the
@@ -147,7 +150,11 @@ Each of these happened. In the order you are likely to meet them.
    grader fails.
 4. **`--json` eats the next argument.** `claude plugin eval --json .` treats `.` as the
    output path and fails. Put the target first: `claude plugin eval . --json out.json`.
-5. **The hook's log is not where you exported it.** Claude Code sets `CLAUDE_PLUGIN_DATA`
+5. **`marketplace update` alone does not update the plugin.** It refreshes the catalog; the
+    installed plugin keeps its files until `claude plugin update team-procedures@team-catalog`
+    runs, and the new files load in the next session. Conversely, `marketplace remove` also
+    uninstalls the plugin — one command resets a machine.
+5b. **The hook's log is not where you exported it.** Claude Code sets `CLAUDE_PLUGIN_DATA`
    itself: `plugins/data/<plugin>-<marketplace>/` for an installed plugin,
    `plugins/data/<plugin>-inline/` under `--plugin-dir`. Your own `export CLAUDE_PLUGIN_DATA=…`
    is overwritten. Look in the config directory, not in your variable.
