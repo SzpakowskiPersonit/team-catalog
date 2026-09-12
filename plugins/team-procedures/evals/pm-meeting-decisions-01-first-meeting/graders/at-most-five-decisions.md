@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: '\[CHANGED\]'
+pattern: '\[D6\]'
 match: not_contains
 ---
