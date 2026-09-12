@@ -1,0 +1,16 @@
+{
+  "description": "Catalog hint. When a prompt contains two or more trigger words of one team procedure, tell the model — and the person — that the procedure exists, who owns it and when it was last verified. Reads the archive too, so retired procedures announce why they died.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/hint.sh\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

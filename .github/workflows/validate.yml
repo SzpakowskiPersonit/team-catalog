@@ -1,0 +1,23 @@
+name: validate
+
+# Every push and every pull request: unit tests for the hook and the validator, then the
+# validator itself on the real catalog. A procedure with owner "team", no version or no
+# verified date does not merge. No secrets, no model calls — this is the cheap gate.
+# Golden cases (claude plugin eval) run locally on demand; see README.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests (hook + validator)
+        run: python -m unittest discover -s tests -v
+      - name: Validate every procedure header
+        run: python tools/validate.py

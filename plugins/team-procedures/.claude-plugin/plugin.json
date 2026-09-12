@@ -1,0 +1,11 @@
+{
+  "name": "team-procedures",
+  "description": "Team procedures as skills (owner, version, verified date, trigger words) with a UserPromptSubmit hook that announces an existing procedure before the model answers.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Personit",
+    "email": "mikolaj.szpakowski@personit.com"
+  },
+  "homepage": "https://github.com/SzpakowskiPersonit/team-catalog",
+  "keywords": ["procedures", "team", "catalog", "skills", "hook"]
+}

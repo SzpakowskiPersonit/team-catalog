@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.DS_Store
+.claude/settings.local.json
+# eval runs are local evidence, not source; the runbook keeps the numbers that matter
+plugins/team-procedures/evals/results/

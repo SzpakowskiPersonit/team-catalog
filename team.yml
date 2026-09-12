@@ -1,0 +1,10 @@
+# The roster.
+#
+# `metadata.owner` in every procedure must be one of these names. A person, never "team":
+# when a golden case fails after a model change, the failure has to go to someone's inbox,
+# and "team" has no inbox. CI (tools/validate.py) rejects any owner not listed here.
+#
+# Add people here first, then let them own procedures.
+members:
+  - Mikołaj
+  - Agnieszka

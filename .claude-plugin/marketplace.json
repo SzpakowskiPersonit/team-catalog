@@ -1,0 +1,21 @@
+{
+  "name": "team-catalog",
+  "description": "Shared catalog of team procedures — the working setup shown in block B of the WaysConf 2026 masterclass 'AI in a Product Team'.",
+  "owner": {
+    "name": "Mikołaj Szpakowski",
+    "email": "mikolaj.szpakowski@personit.com"
+  },
+  "plugins": [
+    {
+      "name": "team-procedures",
+      "source": "./plugins/team-procedures",
+      "description": "Your team's procedures as skills, each with an owner, a version and a last-verified date — plus a hook that speaks up when a procedure already exists for what you are typing.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Personit",
+        "email": "mikolaj.szpakowski@personit.com"
+      },
+      "homepage": "https://github.com/SzpakowskiPersonit/team-catalog"
+    }
+  ]
+}
