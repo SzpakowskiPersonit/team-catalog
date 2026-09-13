@@ -269,8 +269,17 @@ def run_hint(stdin_text: str, plugin_root: Path, data_dir, today: date) -> str:
     name = plugin_name(plugin_root)
     lines = [hint_line(p, today, name) for p, _ in hits]
     _log_hits(data_dir, hits)
+    text = "\n".join(lines)
+    # Two fields, on purpose. `additionalContext` reaches the model and nothing else: Claude Code
+    # folds it into a <system-reminder> the person never sees. `systemMessage` is the one the TUI
+    # prints, as "UserPromptSubmit says: ...". A hint only the model can see is half a hook — the
+    # point is that the person watching also learns the procedure exists. Checked in the TUI on
+    # 2.1.270, with and without the field.
     return json.dumps(
-        {"hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": "\n".join(lines)}},
+        {
+            "systemMessage": text,
+            "hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": text},
+        },
         ensure_ascii=False,
     )
 

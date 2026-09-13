@@ -216,6 +216,15 @@ class HookTests(unittest.TestCase):
         self.assertIn("skill tp:pm-weekly-status", ctx)
         self.assertNotIn("NOT VERIFIED", ctx)
 
+    def test_hint_is_shown_to_the_human_not_only_to_the_model(self):
+        # The whole point of the hook is that the person sees the procedure exists. Claude Code
+        # renders `systemMessage` ("UserPromptSubmit says: ...") and does NOT render
+        # `additionalContext` — that one only reaches the model. Checked in the TUI on 2.1.270,
+        # both ways. Drop systemMessage and the hook goes silent on screen while still working.
+        out = json.loads(self.run_hint({"prompt": "write the weekly status update"}))
+        self.assertEqual(out["systemMessage"], out["hookSpecificOutput"]["additionalContext"])
+        self.assertIn("pm-weekly-status v1.0", out["systemMessage"])
+
     def test_user_input_field_is_accepted_too(self):
         self.assertIn("pm-weekly-status", self.run_hint({"user_input": "weekly status please"}))
 

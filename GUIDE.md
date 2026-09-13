@@ -102,7 +102,7 @@ turn what you just did into a procedure using the template. Under five minutes.
 ## 5. Run the checks
 
 ```
-python -m unittest discover -s tests -v                    # 68 tests, under a second
+python -m unittest discover -s tests -v                    # 69 tests, under a second
 python tools/validate.py                                   # "OK: 4 procedures, 1 archived, 0 errors, 0 warnings"
 claude plugin validate plugins/team-procedures --strict    # Claude Code's own manifest + skill checks
 ```
