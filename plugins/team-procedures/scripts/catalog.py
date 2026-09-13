@@ -286,7 +286,9 @@ def run_hint(stdin_text: str, plugin_root: Path, data_dir, today: date) -> str:
 
 def _log_hits(data_dir, hits) -> None:
     # One line per fired procedure. Nothing reads this file yet; it exists so that one day
-    # something can. Missing data_dir (e.g. `claude --plugin-dir`) means no log, not an error.
+    # something can. No data_dir means no log, not an error. `claude --plugin-dir` is NOT that
+    # case — it sets CLAUDE_PLUGIN_DATA too, just under a `-inline` suffix instead of the
+    # marketplace name (checked 2026-09-13: <config>/plugins/data/team-procedures-inline/).
     if not data_dir:
         return
     try:
