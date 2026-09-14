@@ -192,7 +192,10 @@ class ValidateTests(unittest.TestCase):
 
 class RealCatalogTests(unittest.TestCase):
     def test_the_real_catalog_has_no_errors(self):
-        errors, warnings, counts = validate.run(ROOT, TODAY)
+        # The real catalog is checked against the real today, not the pinned fixture date:
+        # a `verified` date in the future has to fail on the day somebody writes it, and a
+        # pinned TODAY would let every entry added after it through unseen.
+        errors, warnings, counts = validate.run(ROOT, date.today())
         self.assertEqual(errors, [])
         self.assertGreaterEqual(counts["skills"], 4)
         self.assertGreaterEqual(counts["archived"], 1)
