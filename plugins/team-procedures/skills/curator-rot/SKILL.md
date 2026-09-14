@@ -3,7 +3,7 @@ name: curator-rot
 description: Find the procedures in the catalog that have gone stale, unused or wrong since the last model change, and propose for each one to re-verify, rewrite or retire. Use when someone acts as this month's curator and does the periodic pass over the whole catalog.
 metadata:
   owner: Mikołaj
-  version: "1.2"
+  version: "1.3"
   verified: 2026-09-14
   triggers: [rot, stale, decay, retire, unused, archive, curator, sweep]
 ---
@@ -27,9 +27,11 @@ carry out whatever the curator agrees with.
    failed and on which model. Only run `claude plugin eval` yourself if there is no recorded
    run, or the recorded one predates the current model. A case that fails is evidence; a
    procedure nobody ran is not.
-4. Usage, if there is any to read: `plugins/data/*/hits.log` holds one line per time the
-   hook spoke. It exists only on machines where somebody ran the hook, so treat an absent
-   log as no data, never as no use.
+4. Usage, if there is any to read: the hook appends one line per hit to
+   `<claude-config>/plugins/data/<plugin>/hits.log` — NOT to anything under the repo. Find it
+   with `find ~/.claude/plugins/data -name hits.log`; under `--plugin-dir` the directory
+   carries an `-inline` suffix. It exists only on machines where somebody ran the hook, so
+   treat an absent log as no data, never as no use.
 5. For each entry on the agenda pick exactly one of:
    - **re-verify** — it still does what it says: run its cases, set `verified` to today,
      nothing else changes.
@@ -62,6 +64,13 @@ carry out whatever the curator agrees with.
 
 - Zero hits in the log usually means the trigger words are wrong, not that the procedure is
   unused. Check by typing the prompt you would actually type before proposing a retire.
+- The log undercounts, so never read it as a full count. It is per-machine, and the run that
+  is doing the sweep can be missing from it — on 2026-09-14 the hook announced curator-rot on
+  the curator's own prompt and wrote no line for it. Hits are evidence of use; their absence
+  is not evidence of disuse.
+- `evals/results/*/aggregate-result.json` records `claudeVersion`, not the model id. Step 3
+  asks which model a case failed on and the file cannot answer it — say which model you ran
+  under and do not infer one from the run.
 - A failing golden case after a model change is an assertion problem about as often as it
   is a procedure problem. Read the run output before rewriting anything.
 - The oldest `verified` date is rarely the worst entry. The worst one is the procedure that
