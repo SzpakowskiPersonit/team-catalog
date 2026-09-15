@@ -26,6 +26,43 @@ Use it unless the user says otherwise (skill team-procedures:pm-weekly-status).
 
 You did not search. You did not remember. That is the point.
 
+## Make it yours
+
+Cloning this gets you our procedures, which are fictional or ours and neither is useful to
+you. One command turns it into your team's catalog:
+
+```
+read setup/SKILL.md and set this repository up for my team
+```
+
+It asks four things — who is on the team, who is curator this month, what the repository
+will be called, and the one task your team keeps redoing by hand — then writes `team.yml`,
+deletes our demo content, keeps the two curator procedures, and builds your first
+procedure with you. It will not write the **Decisions behind this** and **Gotchas** sections
+for you; that is the point of them.
+
+`setup/SKILL.md` deliberately sits outside `plugins/`: you run it before you have a catalog
+to install it from. Point your agent at the file, or copy the folder into your own skills
+directory if you would rather it announced itself.
+
+### The two lists, and why both have to be right
+
+Setup ends by printing what it cannot do for you, because it needs your account:
+
+| List | Where | What it decides |
+|---|---|---|
+| `team.yml` | this repository | who is allowed to **own** a procedure. CI rejects any other name |
+| Collaborators | GitHub → Settings → Collaborators and teams | who is allowed to **merge** one |
+
+```
+gh repo create <org>/<repo> --public --source=. --push
+gh api -X PUT repos/<org>/<repo>/collaborators/<github-username> -f permission=push
+```
+
+Then tell people it exists. They will not find it on their own — the hook announces a
+procedure to someone who already installed the catalog; it cannot announce the catalog.
+This is not a communication system.
+
 ## What is in the box
 
 | Path | What |
@@ -37,6 +74,7 @@ You did not search. You did not remember. That is the point.
 | `plugins/team-procedures/evals/` | Golden cases for `claude plugin eval`. Re-run when the model changes. |
 | `team.yml` | The roster. `owner` must be one of these names. |
 | `TEMPLATE.md` | Copy this to start a procedure. |
+| `setup/SKILL.md` | Adoption: turns a fresh clone into your team's catalog. Outside `plugins/` on purpose. |
 | `demo/meridian/` | Fictional project used by the workshop demo and by the evals. |
 | `GUIDE.md` | From zero to the first hint on a clean machine — including what bites. |
 

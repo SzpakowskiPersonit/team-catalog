@@ -21,8 +21,13 @@ from test_demo_prompts import FIFTH, STAGE  # noqa: E402  (one source for the pa
 
 STAGE_PART2 = {
     "s6_intake": "as curator, do the intake on the new procedure proposal before we merge it",
-    "s7_rot": "as curator, do the monthly rot sweep over the catalog",
+    "s7_rot": "as curator, do the monthly review over the catalog",
 }
+# The stage name for curator-rot is "the monthly review" (skrypt v2.2, §2.1/§2.3): on the
+# 2026-09-15 dry run "rot pass" came out three different ways in one run. The file keeps its
+# id, so the prompt has to reach it through `curator` + `monthly`. `review` is deliberately
+# NOT a curator trigger -- it belongs to eng-pr-description, and taking it would be exactly
+# the collision §2.2 warns the room about.
 CURATOR = {"curator-intake", "curator-rot"}
 
 
@@ -50,6 +55,14 @@ class CuratorPromptTests(unittest.TestCase):
         for key, prompt in STAGE.items():
             self.assertEqual(self.names_hit(prompt, self.all),
                              self.names_hit(prompt, self.project), key)
+
+    def test_the_stage_word_review_does_not_drag_in_the_pr_procedure(self):
+        # `review` belongs to eng-pr-description. The stage prompt says "monthly review", so a
+        # second eng-pr trigger anywhere in that sentence would put two hints on the screen at
+        # the exact moment the talk is explaining that collisions are the thing to avoid.
+        self.assertEqual(self.names_hit(STAGE_PART2["s7_rot"], self.all), ["curator-rot"])
+        curator_words = {t for p in self.all if p.name in CURATOR for t in p.triggers}
+        self.assertNotIn("review", curator_words)
 
     def test_no_curator_trigger_is_owned_by_a_project_procedure(self):
         project_words = {t for p in self.project for t in p.triggers}

@@ -3,9 +3,9 @@ name: curator-rot
 description: Find the procedures in the catalog that have gone stale, unused or wrong since the last model change, and propose for each one to re-verify, rewrite or retire. Use when someone acts as this month's curator and does the periodic pass over the whole catalog.
 metadata:
   owner: Mikołaj
-  version: "1.3"
+  version: "1.5"
   verified: 2026-09-14
-  triggers: [rot, stale, decay, retire, unused, archive, curator, sweep]
+  triggers: [rot, stale, decay, retire, unused, archive, curator, sweep, monthly]
 ---
 
 ## When to use
@@ -42,6 +42,11 @@ carry out whatever the curator agrees with.
 6. Write the report in the Output format **in the reply itself**, in full, and save the same
    text as `catalog-rot-<YYYY-MM-DD>.md`. Then open one pull request per retire, and one for
    all the re-verifies together — a date bump does not need its own review.
+7. Hand the `Needs its owner` section over and stop. For each line, say which person it goes
+   to and draft the one message that goes with it: what was seen, which entry, what decision
+   is theirs. The curator does not fix other people's procedures — a curator who starts
+   fixing them is doing four people's work by the third month, which is how the rotation
+   dies. Naming the owner is the last step of the pass, not a follow-up.
 
 ## Decisions behind this
 
@@ -59,6 +64,13 @@ carry out whatever the curator agrees with.
 - The sweep is bounded on purpose: headers, the last recorded run, the archive, and stop. An
   unbounded sweep turns into one person debugging one entry for an hour, and the other
   fourteen never get looked at — which is the failure this job exists to prevent.
+- The pass ends in a handoff, not a fix. The curator has the whole catalog in view for an
+  hour a month; the owner has the context for one entry all year. Routing each finding to
+  its owner is the only division of labour that keeps the job to an hour.
+- `monthly` is a trigger because the name people say out loud is "the monthly review", and
+  the prompt has to reach this file through the words somebody actually types. `review`
+  would have been the obvious one and it is deliberately not here: it belongs to
+  `eng-pr-description`, and taking it would put two hints on every pull request prompt.
 
 ## Gotchas
 
@@ -81,6 +93,10 @@ carry out whatever the curator agrees with.
    where the person who asked for it already is; the file is the copy for next month. Our
    golden cases assert against the reply for exactly this reason — the first version of this
    procedure wrote the file and answered with one sentence, and three checks went red.
+- Prompt personas are the thing this pass finds most often right now, and nobody reports
+  them: an entry that opens "you are a senior X specialising in Y" was good practice two
+  model generations ago and is neutral-to-harmful today. Grep the catalog for "you are a"
+  before reading anything else.
 - Retiring an entry does not stop it answering: the hook reads `archive/` too, on purpose,
   so it can say "this was retired and here is what replaced it".
 
