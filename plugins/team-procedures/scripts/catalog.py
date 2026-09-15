@@ -241,7 +241,16 @@ def hint_line(p: Procedure, today: date, plugin: str = "team-procedures") -> str
         why = (p.retired_reason or "no reason recorded").rstrip(". ")
         return f'Team procedure "{p.name}" was RETIRED on {when}: {why}. Check the archive before rebuilding it.'
     n = days_since(p.verified, today)
-    age = f"verified {n} days ago" if n is not None else "verification date unknown"
+    # The line goes on a projector in front of a room. "verified 1 days ago" and
+    # "verified 0 days ago" both read as a bug in the thing you are demonstrating.
+    if n is None:
+        age = "verification date unknown"
+    elif n == 0:
+        age = "verified today"
+    elif n == 1:
+        age = "verified yesterday"
+    else:
+        age = f"verified {n} days ago"
     stale = f" · NOT VERIFIED IN {n // 30}+ MONTHS" if n is not None and n > STALE_DAYS else ""
     return (
         f"Team procedure exists: {p.name} v{p.version or '?'} · owner: {p.owner or 'nobody'} · {age}{stale}. "

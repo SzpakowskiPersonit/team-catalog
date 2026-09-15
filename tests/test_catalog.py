@@ -7,7 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -215,6 +215,15 @@ class HookTests(unittest.TestCase):
         self.assertIn("verified 11 days ago", ctx)
         self.assertIn("skill tp:pm-weekly-status", ctx)
         self.assertNotIn("NOT VERIFIED", ctx)
+
+    def test_the_age_reads_like_english_on_a_projector(self):
+        # 2026-09-15: the collision image in block B §2.2 put "verified 1 days ago" on screen,
+        # next to a correct line, in the middle of the argument that this catalog is maintained.
+        for days, expected in ((0, "verified today"), (1, "verified yesterday"), (2, "verified 2 days ago")):
+            proc = catalog.load_procedure(self.root / "skills" / "pm-weekly-status" / "SKILL.md")
+            line = catalog.hint_line(proc, date.fromisoformat(proc.verified) + timedelta(days=days))
+            self.assertIn(expected, line, days)
+            self.assertNotIn("1 days", line)
 
     def test_hint_is_shown_to_the_human_not_only_to_the_model(self):
         # The whole point of the hook is that the person sees the procedure exists. Claude Code
