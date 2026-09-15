@@ -4,7 +4,7 @@ description: Review a proposed procedure before it is merged into the catalog an
 metadata:
   owner: Mikołaj
   version: "1.0"
-  verified: 2026-09-14
+  verified: 2026-09-15
   triggers: [curator, intake, proposal, duplicate, overlap, curate, gatekeeping, shortlist]
 ---
 

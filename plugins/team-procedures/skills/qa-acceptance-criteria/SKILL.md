@@ -4,7 +4,7 @@ description: Write acceptance criteria for a user story or feature as numbered G
 metadata:
   owner: Mikołaj
   version: "1.0"
-  verified: 2026-09-12
+  verified: 2026-09-15
   triggers: [acceptance, criteria, user story, scenario, gherkin, edge cases, definition of done, testable]
 ---
 

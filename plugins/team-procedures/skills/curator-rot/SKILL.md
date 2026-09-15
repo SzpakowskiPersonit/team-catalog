@@ -3,8 +3,8 @@ name: curator-rot
 description: Find the procedures in the catalog that have gone stale, unused or wrong since the last model change, and propose for each one to re-verify, rewrite or retire. Use when someone acts as this month's curator and does the periodic pass over the whole catalog.
 metadata:
   owner: Mikołaj
-  version: "1.3"
-  verified: 2026-09-14
+  version: "1.4"
+  verified: 2026-09-15
   triggers: [rot, stale, decay, retire, unused, archive, curator, sweep]
 ---
 
@@ -73,6 +73,11 @@ carry out whatever the curator agrees with.
   under and do not infer one from the run.
 - A failing golden case after a model change is an assertion problem about as often as it
   is a procedure problem. Read the run output before rewriting anything.
+- Before you believe a red case, check how it was invoked. A case with a `scaffold_script`
+  runs against an empty workspace unless the run gets `--scaffold`, and then it fails on the
+  fixture it never got. On 2026-09-15 curator-intake read as red for exactly this reason and
+  passed 3/3 once scaffolded. `evals/README.md` has the full command; CLAUDE.md had a short
+  one that dropped the flag.
 - The oldest `verified` date is rarely the worst entry. The worst one is the procedure that
   reaches into a system whose API changed — and that one can have last week's date.
 - Bumping `verified` while re-running the cases in the same session is the easy way to
