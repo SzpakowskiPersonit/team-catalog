@@ -46,5 +46,5 @@ demo/meridian/                           fictional project for the demo and the 
 python -m unittest discover -s tests -v
 python tools/validate.py [--today YYYY-MM-DD]
 claude --plugin-dir plugins/team-procedures
-claude plugin eval plugins/team-procedures --no-publish --ablation none
+claude plugin eval plugins/team-procedures --no-publish --ablation none --scaffold --allow-tools Write
 ```
